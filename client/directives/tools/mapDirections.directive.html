@@ -1,0 +1,43 @@
+<div class="custom-drawing-control" title="How to use this map..." ng-click="info()">
+
+	<span>
+		<div class="control-container">
+ 			<span class="glyphicon glyphicon-question-sign"></span>
+		</div>
+	</span>
+</div>
+
+<script type="text/ng-template" id="infoModal.html">
+    <div class="modal-header">
+    	<h3 class="modal-title">MAP TOOLS</h3>
+	</div>
+	<div class="modal-body">
+		<p>
+			<div style="width: 16px; height: 16px; overflow: hidden; position: relative;"><img src="https://maps.gstatic.com/mapfiles/drawing.png" draggable="false" style="position: absolute; left: 0px; top: -144px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; width: 16px; height: 192px;"></div>
+			- moves the map
+		s</p>
+		<p><div style="width: 16px; height: 16px; overflow: hidden; position: relative;"><img src="https://maps.gstatic.com/mapfiles/drawing.png" draggable="false" style="position: absolute; left: 0px; top: -64px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; width: 16px; height: 192px;"></div>
+			- draws a shape on the map, narrowing markers to that region<br />
+			- ESC key removes the polygon 
+		</p>
+		<p>start: 01/31/2012 <span class="glyphicon glyphicon-calendar"></span><br />
+			- sets the start date for the markers on the map<br />
+			- defaults to present day - 4 years
+		</p>
+		<p>end: 02/01/2016 <span class="glyphicon glyphicon-calendar"></span><br />
+			- sets the end date for the markers on the map<br />
+			- defaults to present day + 1
+		</p>
+		<p>
+			<span class="glyphicon glyphicon-flash"></span><br />
+			- opens modal dialog and displays the top 5 marker statistics
+		</p>
+		<p>
+			<span class="glyphicon glyphicon-fire"></span><br />
+			- toggles heat map on/off
+		</p>
+	</div>
+	<div class="modal-footer">
+	    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+	</div>
+</script>

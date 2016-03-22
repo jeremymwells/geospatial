@@ -1,0 +1,21 @@
+<div ng-init="shortName = temporal.replace('Date','')" class="custom-drawing-control" title="{{shortName}} date" 
+	style="{{temporal === 'startDate' ? 'margin-left:-5px;' : ''}}"
+	ng-click="isOpen = !isOpen">
+
+	<span>
+		<div class="control-container">
+			{{shortName}}: 
+			<span uib-datepicker-popup class="date-picker"
+				is-open="isOpen"
+				ng-model="date"
+				datepicker-append-to-body="true"
+				show-button-bar="false"
+				show-weeks="false"
+				ng-bind="getDisplayDate()"
+				ng-change="handleDateChange()"
+				>			
+			</span>
+ 			<span class="glyphicon glyphicon-calendar"></span>
+		</div>
+	</span>
+</div>

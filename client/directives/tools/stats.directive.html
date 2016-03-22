@@ -1,0 +1,21 @@
+<div class="custom-drawing-control" title="View top stats" ng-click="showStats()">
+
+	<span>
+		<div class="control-container">
+ 			<span class="glyphicon glyphicon-flash"></span>
+		</div>
+	</span>
+</div>
+
+<script type="text/ng-template" id="statsModal.html">
+    <div class="modal-header">
+    	<h3 class="modal-title">MAP STATS</h3>
+	</div>
+	<div class="modal-body">
+		<h4>Top 5 Points:</h4>
+	    <p ng-repeat="marker in mapSvc.markers | limitTo: 5 track by $index" ng-bind="formatMarker(marker)"></p>
+	</div>
+	<div class="modal-footer">
+	    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+	</div>
+</script>

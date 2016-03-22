@@ -1,0 +1,7 @@
+node_modules
+/node_modules/
+node_modules/
+client/bundle*.js
+server/data/tmp/uber_raw_data*
+server/solr/tmp/centroided*
+*npm-debug*

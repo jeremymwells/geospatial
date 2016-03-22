@@ -1,0 +1,117 @@
+{
+  "name": "foil",
+  "version": "1.0.0",
+  "description": "map of foil data points",
+  "main": "index.js",
+  "scripts": {
+    "help": "node server/loaderRunner.js",
+    "server": "npm start",
+    "server:help": "npm run help",
+    "load:help": "npm run help",
+    "load:db": "node server/loaderRunner.js load:db",
+    "load:csv": "node server/loaderRunner.js load:csv",
+    "load:pre:solr": "node --max-old-space-size=4096 server/loaderRunner.js load:pre:solr",
+    "load:solr":"curl http://thejerm.com:8983/solr/cluster_points/update?commit=true --data-binary @server/solr/tmp/centroided_solr_docs.csv -H 'Content-type:text/csv; charset=utf-8'",
+    "prestart": "gulp build",
+    "start": "node server/index.js start"
+  },
+  "author": "jeremy wells",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.4.8",
+    "angular-ui-bootstrap": "^0.14.3",
+    "angular-ui-router": "^0.2.15",
+    "body-parser": "^1.14.2",
+    "compression": "^1.6.1",
+    "curlrequest": "^0.5.7",
+    "express": "^4.13.4",
+    "express-router": "0.0.1",
+    "geo-hash": "0.0.2",
+    "http-post": "^0.1.1",
+    "lodash": "^3.10.1",
+    "moment": "^2.11.1",
+    "mysql": "github:felixge/node-mysql",
+    "node-serialize": "0.0.4",
+    "q": "^1.4.1",
+    "request": "^2.69.0",
+    "rxjs": "^5.0.0-beta.3"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babelify": "^7.2.0",
+    "del": "^2.2.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-if": "^2.0.0",
+    "gulp-nodemon": "^1.0.5",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.1",
+    "gulp-watch": "^4.3.5",
+    "gulp-webserver": "^0.9.1",
+    "polygon-centroid": "^1.0.0"
+  },
+  "config": {
+    "server": {
+      "protocol": "http",
+      "host": "localhost",
+      "port": "8080"
+    },
+    "db": {
+      "user": {
+        "name": "root",
+        "password": "ubuntu_dev_root"
+      },
+      "address": "thejerm.com",
+      "port": "63306",
+      "name": "uber",
+      "connectionLimit": "20",
+      "connectTimeout": "10000"
+    },
+    "inputHttpData": {
+      "host": "raw.githubusercontent.com",
+      "path": "/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-apr14.csv"
+    },
+    "solrServer": {
+      "hostname": "thejerm.com",
+      "port": "8983",
+      "collection": "cluster_points"
+    },
+    "solrDeletePoints": {
+      "path": "/solr/%s/update?wt=json&stream.body=<delete><query>*:*</query></delete>&commit=true"
+    },
+    "solrSelectPoints": {
+      "method": "POST",
+      "path": "/solr/%s/query",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    "solrUpdatePointsCSV": {
+      "method": "post",
+      "path": "/solr/%s/update?commit=true",
+      "filename": "server/solr/tmp/centroided_solr_docs.csv",
+      "headers": {
+        "Transfer-Encoding": "chunked",
+        "Content-Type": "text/plain; charset=utf-8"
+      }
+    },
+    "solrUpdatePointsJSON": {
+      "method": "post",
+      "path": "/solr/%s/update?commit=true",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    "centroidedSolrDocsCSVPath": "server/solr/tmp/centroided_solr_docs.csv",
+    "inputDataFilePath": "server/data/tmp/uber_raw_data_apr14",
+    "polygonStyle": {
+      "strokeColor": "gray",
+      "strokeWeight": 1,
+      "fillColor": "lightblue",
+      "opacity": 0.7
+    }
+  }
+}

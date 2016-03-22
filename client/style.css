@@ -1,0 +1,116 @@
+body{
+	position:absolute;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	margin:0 0 0 0 !important;
+}
+google-map{
+	position:absolute;
+	height:100%;
+	width:100%;
+}
+
+.map-loading{
+    position:absolute;
+    width:20%;
+    top:2em;
+    left:40%;
+    opacity:.7;
+    z-index: 10000;
+}
+
+.tools{
+	position:absolute;
+	height:100%;
+	width:100%;
+	z-index: 10000;
+	background-color:transparent !important;
+}
+.top-right{
+    margin:5px 10px;
+}
+.custom-drawing-control{
+    margin: 5px 0 0 -1px;
+    direction: ltr;
+    overflow: hidden;
+    text-align: left;
+    position: relative;
+    color: rgb(86, 86, 86);
+    font-family: Roboto, Arial, sans-serif;
+    -webkit-user-select: none;
+    font-size: 11px;
+    padding: 4px;
+    -webkit-background-clip: padding-box;
+    box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+    border-left-width: 0px;
+    background-color: rgb(255, 255, 255);
+    background-clip: padding-box;
+}
+.custom-drawing-control:hover{
+	background-color:rgb(235,235,235);
+	cursor:default;
+}
+.custom-drawing-control span{
+	display:inline-block;
+}
+.custom-drawing-control span div{
+	/*width: 16px;*/
+    height: 12px;
+    overflow: hidden;
+    position: relative;
+}
+.control-container span {
+    margin-top: -.24em;
+}
+.labels{
+    color: white;
+    text-shadow: 2px 2px 5px #000;
+    font-weight: bold;
+    font-size: 14px;
+    opacity: 1;
+    pointer-events: none;
+    text-align: center;
+    width: 60px;
+    white-space: nowrap;
+}
+
+.map-legend{
+    height:100% !important;
+}
+.map-legend span div{
+    height: auto !important;
+}
+.map-legend span div div.header{
+    text-align:center;
+    border-bottom:1px solid gray;
+}
+.map-legend-list {
+    list-style-type: none;
+    padding:1em 0 0 0;
+}
+.map-legend-list li{
+    /*display:block;*/
+    display:block;
+    margin:0 0 5px 0;
+    text-align:center;
+}
+.map-legend-list li div{
+    margin:auto;
+    cursor:pointer;
+}
+.map-legend-list li div img{
+    width:30px;
+}
+.map-legend-list li div span{
+    display:block;
+}
+
+
+
+
+
+
+
+
