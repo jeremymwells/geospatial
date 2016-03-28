@@ -17,7 +17,7 @@ function Map(mapCfg){
 	this.drawingManager = new DrawingManager(this);
 
 	this.initializeEventListeners();
-
+    
 	return this;
 }
 

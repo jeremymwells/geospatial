@@ -1,8 +1,12 @@
-<div class="custom-drawing-control" title="Toggle heat map" ng-click="toggleHeatMap()">
+<div class="custom-drawing-control" 
+	title="Toggle heat map" 
+	ng-click="toggleHeatMap()" 
+	ng-class="{ 'heatmap-on' : heatmapIsOn() }">
 
 	<span>
 		<div class="control-container">
  			<span class="glyphicon glyphicon-fire"></span>
+			heat map
 		</div>
 	</span>
 </div>

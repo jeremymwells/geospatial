@@ -65,17 +65,22 @@ google-map{
     margin-top: -.24em;
 }
 .labels{
-    color: white;
-    text-shadow: 2px 2px 5px #000;
+  /*  color: white;
+    text-shadow: 2px 2px 5px #000;*/
     font-weight: bold;
-    font-size: 14px;
+    font-size: 11px;
     opacity: 1;
     pointer-events: none;
     text-align: center;
     width: 60px;
     white-space: nowrap;
 }
-
+.heatmap-on{
+    background-color: #FFA500;
+    color:white;
+    text-shadow: 2px 2px 5px black;
+    border:1px solid gray;
+}
 .map-legend{
     height:100% !important;
 }

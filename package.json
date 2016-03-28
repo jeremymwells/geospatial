@@ -11,7 +11,7 @@
     "load:db": "node server/loaderRunner.js load:db",
     "load:csv": "node server/loaderRunner.js load:csv",
     "load:pre:solr": "node --max-old-space-size=4096 server/loaderRunner.js load:pre:solr",
-    "load:solr":"curl http://thejerm.com:8983/solr/cluster_points/update?commit=true --data-binary @server/solr/tmp/centroided_solr_docs.csv -H 'Content-type:text/csv; charset=utf-8'",
+    "load:solr": "curl http://ec2-52-90-1-20.compute-1.amazonaws.com:8983/solr/cluster_points/update?commit=true --data-binary @server/solr/tmp/centroided_solr_docs.csv -H 'Content-type:text/csv; charset=utf-8'",
     "prestart": "gulp build",
     "start": "node server/index.js start"
   },
@@ -23,6 +23,7 @@
     "angular-ui-router": "^0.2.15",
     "body-parser": "^1.14.2",
     "compression": "^1.6.1",
+    "core-util-is": "^1.0.2",
     "curlrequest": "^0.5.7",
     "express": "^4.13.4",
     "express-router": "0.0.1",
@@ -30,7 +31,7 @@
     "http-post": "^0.1.1",
     "lodash": "^3.10.1",
     "moment": "^2.11.1",
-    "mysql": "github:felixge/node-mysql",
+    "mysql": "mysqljs/mysql",
     "node-serialize": "0.0.4",
     "q": "^1.4.1",
     "request": "^2.69.0",
@@ -61,12 +62,12 @@
     },
     "db": {
       "user": {
-        "name": "root",
-        "password": "ubuntu_dev_root"
+        "name": "geospatial",
+        "password": "ubuntu_dev_geospatial"
       },
-      "address": "thejerm.com",
-      "port": "63306",
-      "name": "uber",
+      "address": "mysql-v5-7-11-geospatial.cavvhba9tzng.us-east-1.rds.amazonaws.com",
+      "port": "3306",
+      "name": "geospatial",
       "connectionLimit": "20",
       "connectTimeout": "10000"
     },
@@ -75,7 +76,7 @@
       "path": "/fivethirtyeight/uber-tlc-foil-response/master/uber-trip-data/uber-raw-data-apr14.csv"
     },
     "solrServer": {
-      "hostname": "thejerm.com",
+      "hostname": "ec2-52-90-1-20.compute-1.amazonaws.com",
       "port": "8983",
       "collection": "cluster_points"
     },

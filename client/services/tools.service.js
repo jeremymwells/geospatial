@@ -5,7 +5,7 @@ var directiveCfgs = [
 	require('../directives/tools/mapLegend.config'),
 	// require('../directives/tools/mapDirections.config'),
 	// require('../directives/tools/stats.config'),
-	// require('../directives/tools/toggleHeatMap.config')
+	require('../directives/tools/toggleHeatMap.config')
 ];
 
 

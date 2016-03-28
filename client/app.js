@@ -4,7 +4,7 @@ var angular = require('angular');
 
 var typeExtensions = require('./objects/typeExtensions');
 var mapService = require('./services/map.service');
-var markerLabelerService = require('./services/markerLabeler.service');
+var markerService = require('./services/marker.service');
 var solrService = require('./services/solr.service');
 var queryTranslatorService = require('./services/queryTranslator.service');
 var facetTranslatorService = require('./services/facetTranslator.service');
@@ -32,9 +32,9 @@ angular.module('foil', [require('angular-ui-bootstrap'), require('angular-ui-rou
         templateUrl: '/routes/map/layout.html'
       })
       .state('map.view', {
-        url: '/map/view?pickups&dropoffs&mapCenter&polygon&zoom&startDate&endDate',
+        url: '/map/view?pickups&dropoffs&mapCenter&polygon&zoom&startDate&endDate&heatmap',
         templateUrl: '/routes/map/view/map.html',
-        params:{ zoom: '', polygon: '', startDate:'', endDate: '', dropoffs: '', pickups: '', mapCenter:'' }
+        params:{ zoom: '', polygon: '', startDate:'', endDate: '', dropoffs: '', pickups: '', mapCenter:'', heatmap: '' }
       })
       ;
 
@@ -51,7 +51,7 @@ angular.module('foil', [require('angular-ui-bootstrap'), require('angular-ui-rou
   })
 
  .service('mapSvc', mapService)
- .service('markerLabelerSvc', markerLabelerService)
+ .service('markerSvc', markerService)
  .service('solrSvc', solrService)
  .service('queryTranslatorSvc', queryTranslatorService)
  .service('facetTranslatorSvc', facetTranslatorService)

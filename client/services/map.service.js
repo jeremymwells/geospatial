@@ -11,13 +11,56 @@ var Map = require('../objects/map.object'),
  * Represents a map service
  * @constructor
  */
-var mapService = function($window, $q, solrSvc, toolsSvc, $state, $timeout, markerLabelerSvc){
+var mapService = function($window, $q, solrSvc, toolsSvc, $state, $timeout, markerSvc){
 
     var self = this;
-    this.heatMap = false;
     this.loading = false;
     this.markers = [];
-    this.heatmapPoints = [];
+
+    function showClusters(data){
+
+        return new $q(function(resolve, reject){
+
+            clearMarkers();
+
+            for(var i =0;i<data.length;i++){
+                self.markers.push(markerSvc.getMarker(data[i], self.map.gMap));
+            }
+
+            self.markerClusterer = markerSvc.getClusterer(self.map.gMap, self.markers)
+
+            resolve(self.markers);
+        })
+    }
+
+    /**
+     * Sets mapSvc.heatmapPoints
+     * @param {[]} points - The groups of GeoPoints used to set heatmapPoints
+     * @returns {void}
+     */
+    function showHeatmap(points){
+        return new $q(function(resolve, reject){
+            clearMarkers();
+            self.markers = markerSvc.getHeatmapData(points);
+            self.map.gMapHeatMap = new google.maps.visualization.HeatmapLayer({
+                data: self.markers,
+                map: self.map.gMap
+            });
+            self.map.gMapHeatMap.set('radius', 30);
+            resolve(self.markers);
+        });
+    }
+
+    function clearMarkers(){
+        
+        if (self.map.gMapHeatMap){ self.map.gMapHeatMap.data.clear(); }
+        
+        if (self.markerClusterer){ self.markerClusterer.clearMarkers(); }
+
+        (self.markers || []).forEach(function(marker){ if (marker.setMap) { marker.setMap(null); } });
+
+        self.markers = [];
+    }
 
     /**
      * Callback function
@@ -43,8 +86,6 @@ var mapService = function($window, $q, solrSvc, toolsSvc, $state, $timeout, mark
         self.updateMap();
     }
 
-
-
     function debounceSolrSvcRequest(){        
         if (self.currentRequest) { $timeout.cancel(self.currentRequest); }
         return $q(function(resolve){
@@ -58,158 +99,17 @@ var mapService = function($window, $q, solrSvc, toolsSvc, $state, $timeout, mark
         self.loading = true;
         $state.go($state.current, $state.params)
             .then(debounceSolrSvcRequest)
-            .then(self.handlePoints)
+            .then($state.params.heatmap === 'true' ? showHeatmap : showClusters)
             .then(function(){
                 self.loading = false;
+            }).catch(function(err){
+                console.log('ERROR!!!!', err, err.stack)
             });
     }
 
     this.getCurrentCenter = function(){
         if ($state.params.mapCenter) { return $state.params.mapCenter.toPoint(); }
         if (self.map) { return new Point(self.map.getCenterPoint()); }
-    }
-
-    /**
-     * Toggles map between heatmap mode and regular mode
-     * @returns {void}
-     */
-    this.toggleMap = function(){
-        self.heatMap = !self.heatMap;
-        self.loading = true;
-    }
-
-    /**
-     * Handles points sent by server depending on map mode (heatmap or normal)
-     * @param {[]} points - The groups of GeoPoints
-     * @returns {void}
-     */
-    this.handlePoints = function(points){
-        if (self.heatMap){
-            self.setHeatPoints(points);
-            self.gMapHeatMap = new google.maps.visualization.HeatmapLayer({
-                data: self.heatmapPoints,
-                map: self.map.gMap
-            });
-        }else{
-            self.setMarkers(points);
-        }
-    }
-
-    /**
-     * Sets mapSvc.heatmapPoints
-     * @param {[]} points - The groups of GeoPoints used to set heatmapPoints
-     * @returns {void}
-     */
-    this.setHeatPoints = function(points){
-        self.clearMarkers();
-        for(var i =0;i<points.length;i++){
-            var pt = points[i];
-            var pickupLatLng = new google.maps.LatLng(parseFloat(pt.Pickup.x),parseFloat(pt.Pickup.y));            
-            self.heatmapPoints.push(pickupLatLng);
-            if (pt.count===1){                
-                self.heatmapPoints.push(new google.maps.LatLng(parseFloat(pt.Dropoff.x),parseFloat(pt.Dropoff.y)));
-            }
-        }
-    }
-
-    /**
-     * Clears heatmap points from map
-     * @returns {void}
-     */
-    this.clearHeatPoints = function(){
-        if (self.gMapHeatMap){
-            self.gMapHeatMap.setMap(null);
-        }
-    }
-
-    /**
-     * Clears heatmap points and markers from map
-     * @returns {void}
-     */
-    this.clearMarkers = function(){
-        self.clearHeatPoints();
-
-        if (self.markerClusterer){
-            self.markerClusterer.clearMarkers();
-        }
-
-        if (self.markers) {
-            for(var i =0;i<self.markers.length;i++){
-                self.markers[i].setMap(null);
-            }
-        }
-        self.markers = [];
-    }
-
-    this.getTitle = function(pickups, dropoffs){
-        var pickupDesc = 'pickup',
-        dropoffDesc = 'dropoff';
-
-        if (pickups > 1){ pickupDesc += 's'; }
-        if (dropoffs > 1){ dropoffDesc += 's'; }
-
-
-        return util.format('%s %s | %s %s', pickups, pickupDesc, dropoffs, dropoffDesc)
-    }
-
-    this.getMarker = function(cluster){
-        var pickupsCount = _.result(cluster, 'pickups.count', 0),
-            dropoffsCount = _.result(cluster, 'dropoffs.count', 0),
-            icon, 
-            label,
-            title;
-
-        //pickups -->
-        if (pickupsCount && !dropoffsCount){
-            icon = '/images/green.png';
-            label = ''+pickupsCount;
-            title = label + ' pickup @ ' + moment(cluster.pickups.date).format('MM/DD/YYYY');
-        }
-
-        //dropoffs -->
-        if (!pickupsCount && dropoffsCount){
-            icon = '/images/red.png';
-            label = ''+dropoffsCount;
-            title = label + ' dropoff @ ' + moment(cluster.dropoffs.date).format('MM/DD/YYYY');
-        }
-
-        //both pickups and dropoffs -->
-        if (pickupsCount>0 && dropoffsCount > 0) {
-            icon = '/images/blue.png';
-            label = ''+cluster.totalPointsRepresented;
-            title = self.getTitle(pickupsCount, dropoffsCount)
-        }
-
-        return new MarkerWithLabel({
-            icon:icon,
-            position: new google.maps.LatLng(cluster.lat, cluster.lng),
-            labelContent: label, //self.getContentNode(icon.url, label, title),
-            labelClass: 'labels',
-            title:title,
-            labelAnchor: new google.maps.Point(30,35),
-            draggable: false,
-            raiseOnDrag: false,
-            map: self.map.gMap
-        });
-        // return new google.maps.Marker(markerCfg);
-    }
-    /**
-     * Sets mapSvc.markers
-     * @param {[]} points - The groups of GeoPoints used to set markers
-     * @returns {Promise<void>}
-     */
-    this.setMarkers = function(data){
-
-        return new $q(function(resolve, reject){
-
-            self.clearMarkers();
-
-            self.markers = [];
-            for(var i =0;i<data.length;i++){
-                self.markers.push(self.getMarker(data[i]));
-            }
-
-        })
     }
 
     this.getInitialCenterPoint = function(){
@@ -262,14 +162,13 @@ var mapService = function($window, $q, solrSvc, toolsSvc, $state, $timeout, mark
                     pickups: $state.params.pickups || true,
                     dropoffs: $state.params.dropoffs || true,
                     zoom: $state.params.zoom || 14,
-                    startDate: $state.params.startDate || moment().add(-4, 'y').toISOString(),
-                    endDate: $state.params.endDate || moment().add(1, 'd').toISOString(),
-                    mapCenter: $state.params.mapCenter || point.toWKTPointString()
+                    startDate: $state.params.startDate || moment('04012014', 'MMDDYYYY').toISOString(),
+                    endDate: $state.params.endDate || moment('04302014', 'MMDDYYYY').toISOString(),
+                    mapCenter: $state.params.mapCenter || point.toWKTPointString(),
+                    heatmap: $state.params.heatmap || false
                 }))
             });
-        })
-        
-        
+        })  
     }
 
     this.bootstrap = function(scope, element){

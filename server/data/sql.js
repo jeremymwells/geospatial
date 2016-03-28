@@ -12,7 +12,8 @@ module.exports = {
 	insertGeoPointsQueryStarter: `INSERT INTO %s (%s) VALUES
 	`,
 
-	createGeoPointsTableCommand: `CREATE TABLE %s
+	createGeoPointsTableCommand: `SET default_storage_engine=MYISAM; 
+									CREATE TABLE %s
 									( 
 									  id int NOT NULL AUTO_INCREMENT PRIMARY KEY, 
 									  pickup_date DATETIME NOT NULL, 
